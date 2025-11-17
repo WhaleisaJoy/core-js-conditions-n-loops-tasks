@@ -497,8 +497,31 @@ function sortByAsc(arr) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  let res = str;
+  let count = iterations;
+
+  while (count > 0) {
+    let even = '';
+    let odd = '';
+
+    for (let i = 0; i < res.length; i += 1) {
+      if (i % 2 === 0) {
+        even += res[i];
+      } else {
+        odd += res[i];
+      }
+    }
+
+    res = even + odd;
+    count -= 1;
+
+    if (res === str) {
+      count %= iterations - count;
+    }
+  }
+
+  return res;
 }
 
 /**
@@ -519,8 +542,49 @@ function shuffleChar(/* str, iterations */) {
  * 321321   => 322113
  *
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const digits = [];
+  let copyNum = number;
+
+  while (copyNum > 0) {
+    digits.unshift(copyNum % 10);
+    copyNum = Math.floor(copyNum / 10);
+  }
+
+  let pivotIndex = -1;
+  for (let i = digits.length - 2; i >= 0; i -= 1) {
+    if (digits[i] < digits[i + 1]) {
+      pivotIndex = i;
+      break;
+    }
+  }
+
+  if (pivotIndex === -1) {
+    return number;
+  }
+
+  let swapIndex = pivotIndex + 1;
+  for (let i = pivotIndex + 2; i < digits.length; i += 1) {
+    if (digits[i] > digits[pivotIndex] && digits[i] < digits[swapIndex]) {
+      swapIndex = i;
+    }
+  }
+
+  const copyDigits = digits[pivotIndex];
+  digits[pivotIndex] = digits[swapIndex];
+  digits[swapIndex] = copyDigits;
+
+  for (let i = pivotIndex + 1; i < digits.length; i += 1) {
+    for (let j = i + 1; j < digits.length; j += 1) {
+      if (digits[i] > digits[j]) {
+        const innercCopyDigits = digits[i];
+        digits[i] = digits[j];
+        digits[j] = innercCopyDigits;
+      }
+    }
+  }
+
+  return +digits.join('');
 }
 
 module.exports = {
